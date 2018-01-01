@@ -1,27 +1,15 @@
 # Plants vs. Zombies Clone
 # Created by Austin Moninger in COMP 160 (Fall 2017)
+# Submitted on 12/01/2017
 
-
-#################################################################################################################
-# SUBMISSION 11/18/2017)
-#
-# LINK TO PITCH SHEET:
-# • https://www.dropbox.com/s/0fkqnbtrxi3vxky/pitchsheet.png?dl=0
-#
-# CONTROLS
-# • collect sun by clicking
-# • plant seeds by clicking once on the seed packet and then once more
-#	on the playing grid (plants in the nearest location to the click)
-# • sunflowers will give you more sun
-# • peashooters will take down incoming zombies
-# • walnuts will provide a sturdy barrier
-
-# • second wave at score 35 and third wave at score 80
-#
-#################################################################################################################
-# TODO
-# • game balance
-#################################################################################################################
+# 	TABLE OF CONTENTS			 			 #
+#		line 110 - IMAGES AND SOUNDS		 #
+#		line 221 - CLASSES				 	 #
+#		line 621 - IMAGE INFO		 		 #
+#		line 644 - HELPER FUNCTIONS		 	 #
+#		line 729 - CLICK AND TIMER HANDLERS  #
+#		line 1146 - DRAWING AND COLLISIONS	 #
+#		line 1379 - INITIALIZE AND RUN		 #
 
 
 
@@ -74,8 +62,9 @@ first_square = (296, 125)
 dist_squares = (80, 92)
 
 
-# Constants that don't change
+# Game contstants that won't be modified
 first_seed_pos = (110, 130)
+pea_direction = (40, 20)
 pea_vel = 5
 sun_value = 25
 collision_detection = 40
@@ -83,7 +72,7 @@ plant_health = 300
 wave1_cap = 35
 wave2_cap = 80
 game_over_line = 255
-sun_spawn_freq = 12000 # TODODOODOODVA
+sun_spawn_freq = 12000 
 pea_shoot_freq = 1800
 sunflower_spawn_freq = 15000
 zombie_spawn_freq = 20000
@@ -92,11 +81,11 @@ bucket_spawn_freq = 130000
 zombie_groan_freq = 10000
 
 
-# Constants that will change
+# Game constants that will be modified
 zombie_vel = 0.18
-sun_count = 100 #TODODOODOODVA
+sun_count = 100 
 tower_indicator = 0
-score = 0 #TODODOODOODVA
+score = 0 
 highscore = 0
 seed_selected = False
 shovel_selected = False
@@ -106,7 +95,7 @@ show_score = False
 new_wave_flash = False
 new_wave_height = 0
 plant_image = None
-sun_cost = 0
+sun_cost = 0 
 time = 0
 time2 = 0
 time3 = 0
@@ -116,11 +105,12 @@ not_run_wave3_yet = True
 not_run_150_yet = True
 
 
+
 #################################################################################################################
+# IMAGES AND SOUNDS #
 
 
 
-# Images
 day_background_image = 		simplegui.load_image("https://www.dropbox.com/s/62atmr4nbx2ojjj/day_background.png?dl=1")
 sun_image = 				simplegui.load_image("https://www.dropbox.com/s/2gjjer5e9eajedc/Sun_PvZ2.png?dl=1")
 shovel_image = 				simplegui.load_image("https://www.dropbox.com/s/vc6of6ec5hu09s9/Shovel.jpg?dl=1")
@@ -160,7 +150,6 @@ wave_image = 				simplegui.load_image("https://www.dropbox.com/s/eoupzjx28pc0d2r
 sunscore_image = 			simplegui.load_image("https://www.dropbox.com/s/h2embumab678cjn/Screen%20Shot%202017-11-18%20at%208.24.04%20PM.png?dl=1")
 cooldown_image = 			simplegui.load_image("https://www.dropbox.com/s/069bxjiifzb38s6/dark.png?dl=1")
 
-# Music and sounds
 day_soundtrack = 			simplegui.load_sound("https://www.dropbox.com/s/qzz4jvyrzuzbl5h/maintheme.mp3?dl=1")
 second_soundtrack =         simplegui.load_sound("https://www.dropbox.com/s/nryvrqy0nwnr9bp/09-watery-graves-fast-.mp3?dl=1")
 third_soundtrack = 			simplegui.load_sound("https://www.dropbox.com/s/d66ahu3i1dl60yr/15%20Zombies%20on%20Your%20Lawn.mp3?dl=1")
@@ -229,24 +218,35 @@ beep_sound5 = 				simplegui.load_sound("https://www.dropbox.com/s/99pncxszpzu9bf
 
 
 #################################################################################################################
+# CLASSES #
 
 
 
-# Image class storing center and size of the image
 class ImageInfo:
+    """
+    Image class storing center and size of the image
+    """
     def __init__(self, center, size):
         self.center = center
         self.size = size
 
     def get_center(self):
+        """
+        Returns the center of the image
+        """
         return self.center
 
     def get_size(self):
+        """
+        Returns the size of the image
+        """
         return self.size
 
-
-# Class storing properties of a plant tower
+    
 class Plant:
+    """
+    Class storing properties of a plant tower
+    """
     def __init__(self, sun_cost, image, pos, tower_indicator, lane, health):
         self.sun_cost = sun_cost
         self.image = image
@@ -263,52 +263,81 @@ class Plant:
         self.hit_indicator = False
         self.hit_counter = 0
         self.last_hit = 0
-
+        
     def get_health(self):
+        """
+        Returns the health the plant
+        """
         return self.health
-
+    
     def get_pos(self):
+        """
+        Returns the position the plant
+        """
         return self.pos
-
+    
     def get_sun_cost(self):
+        """
+        Returns how much sun the plant costs
+        """
         return self.sun_cost
-
+    
     def get_tower_indicator(self):
+        """
+        Returns the type of plant
+        """
         return self.tower_indicator
-
+    
     def sunflower_sun_spawner(self):
+        """
+        Spawns suns on top of sunflowers
+        """
         sun_group.add(Sun([self.get_pos()[0], self.get_pos()[1] + 30], True))
-
+        
     def not_being_hit(self):
+        """
+        Changes the plant's state to not being eaten
+        """
         self.hit_indicator = False
-
-    # Knock health when being eaten
+    
     def hit(self, zombie):
+        """
+        Updates attributes after being eaten
+        """
         self.health -= 1
         self.hit_indicator = True
         self.last_hit = 0
         if zombie.get_health() <= 1:
             self.hit_indicator = False
-        #self.hit_counter = 0
-
-    # Detect collisions with zombies
+        
     def collide(self, zombie):
-        return (self.lane == zombie.get_lane() and
+        """
+        Returns whether or not a zombie is close enough to eat
+        """
+        return (self.lane == zombie.get_lane() and 
                math.fabs(zombie.get_pos()[0] - self.pos[0]) <= collision_detection)
-
-    # Shoot peas
+    
     def shoot(self, zombie_group):
+        """
+        Shoots peas if the plant is a peashooter
+        """
         for zombie in zombie_group:
             if zombie.get_lane() == self.lane:
                 pos = list(self.pos)
-                pos[0] += 40
-                pos[1] -= 20
+                pos[0] += pea_direction[0]
+                pos[1] -= pea_direction[1]
                 pea_group.add(Pea(pos, self.lane))
                 pea_shoot()
-
+    
+    
     def draw(self, canvas):
-
+        """
+        Handles all the behaviors of the plant
+        """
+        
+        # for sunflowers and peashooters
         if self.tower_indicator == 1 or self.tower_indicator == 2:
+            # bob the plant up and down
             if self.bob_up:
                 self.bob_pos[1] += 0.07
                 if self.bob_pos[1] > self.pos[1] + 2:
@@ -317,13 +346,13 @@ class Plant:
                 self.bob_pos[1] -= 0.07
                 if self.bob_pos[1] < self.pos[1] - 2:
                     self.bob_up = True
-
+            
+            # for sunflowers
             if self.tower_indicator == 1:
-
+                
+                # determine which image to draw based on if the plant is being eaten
                 if self.hit_indicator:
                     self.hit_counter += 1
-
-
                 if self.hit_counter % 60 < 30 and self.hit_indicator:
                     canvas.draw_image(sunflowerhit_tower_image, sunflower_info.get_center(),
                                         sunflower_info.get_size(), self.bob_pos, desired_sunflower_dim)
@@ -331,25 +360,31 @@ class Plant:
                     canvas.draw_image(sunflower_tower_image, sunflower_info.get_center(),
                                         sunflower_info.get_size(), self.bob_pos, desired_sunflower_dim)
                 self.timer_sun += 1
-
+           
+                # spawn sun
                 if self.timer_sun == 420 or self.timer_sun % 1320 == 0:
                     self.sunflower_sun_spawner()
-
+            
+            # for peashooters
             elif self.tower_indicator == 2:
+                # shoot peas
                 self.timer_pea += 1
                 if self.timer_pea % 108 == 0:
                     self.shoot(zombie_group)
+                    
+                # determine which image to draw based on if the plant is being eaten    
                 if self.hit_indicator:
                     self.hit_counter += 1
-
                 if self.hit_counter % 60 < 30 and self.hit_indicator:
                     canvas.draw_image(peashooterhit_tower_image, peashooter_info.get_center(),
                                     peashooter_info.get_size(), self.bob_pos, desired_peashooter_dim)
                 else:
                     canvas.draw_image(peashooter_tower_image, peashooter_info.get_center(),
                                     peashooter_info.get_size(), self.bob_pos, desired_peashooter_dim)
-
+        
+        # for wall-nuts
         elif self.tower_indicator == 3:
+            # rock the plant back and forth
             if self.rotate_right:
                 self.angle += 0.005
                 if self.angle >= 0.15:
@@ -357,12 +392,12 @@ class Plant:
             else:
                 self.angle -= 0.005
                 if self.angle <= -0.15:
-                    self.rotate_right = True
-
+                    self.rotate_right = True 
+            
+            # determine which wall-nut to draw based on health
             if self.hit_indicator:
                 self.hit_counter += 1
             if self.health >= 600:
-
                 if self.hit_counter % 60 < 30 and self.hit_indicator:
                     canvas.draw_image(walnuthit_tower_image, walnut_info.get_center(),
                                   walnut_info.get_size(), self.pos, desired_walnut_dim, self.angle)
@@ -374,40 +409,59 @@ class Plant:
                     canvas.draw_image(oldwalnuthit_image, [50, 50], [100, 100], self.pos, desired_walnut_dim, self.angle)
                 else:
                     canvas.draw_image(oldwalnut_image, [50, 50], [100, 100], self.pos, desired_walnut_dim, self.angle)
-
-
-# Class storing properties of a zombie
+    
+    
 class Zombie:
+    """
+    Class storing properties of a zombie
+    """
     def __init__(self, pos, lane, health):
         self.health = health
         self.pos = pos
         self.lane = lane
-        self.hit = False
         self.hit_counter = 0
-
-        self.rotate_right = True
         self.angle = 0.05
-
+        self.rotate_right = True
+        self.hit = False
+    
     def get_pos(self):
+        """
+        Returns position of the zombie
+        """
         return self.pos
-
+    
     def get_health(self):
+        """
+        Returns the health of the zombie
+        """
         return self.health
-
+    
     def get_lane(self):
+        """
+        Returns the lane of the zombie
+        """
         return self.lane
-
-    # Knock health when hit by peas
+    
     def pea_hit(self):
+        """
+        Change health when the zombie is hit
+        """
         self.health -= 1
         self.hit = True
         self.hit_counter = 0
-
-    # Move the zombie to the left
+    
     def update(self):
+        """
+        Move the zombie towards the left
+        """
         self.pos[0] -= zombie_vel
-
+        
     def draw(self, canvas):
+        """
+        Handles all the behavior of the zombie
+        """
+        
+        # rock the zombie back and forth
         if self.rotate_right:
             self.angle += 0.005
             if self.angle >= 0.4:
@@ -415,10 +469,10 @@ class Zombie:
         else:
             self.angle -= 0.005
             if self.angle <= -0.2:
-                self.rotate_right = True
-
-        self.hit_counter += 1
-
+                self.rotate_right = True       
+        
+        # determine which zombie to display based on health counter
+        self.hit_counter += 1 
         if self.health >= 30:
             if self.hit and self.hit_counter <= 5:
                 canvas.draw_image(buckethit_image, bucket_info.get_center(), bucket_info.get_size(),
@@ -440,10 +494,12 @@ class Zombie:
             else:
                 canvas.draw_image(zombie_image, zombie_info.get_center(), zombie_info.get_size(),
                             self.pos, desired_zombie_dim, self.angle)
+            
 
-
-# Class storing properties of a sun
 class Sun:
+    """
+    Class storing properties of a sun
+    """
     def __init__(self, pos, from_flower):
         self.pos = pos
         self.shrinking = False
@@ -451,28 +507,43 @@ class Sun:
         self.from_flower = from_flower
         self.angle = 0
         self.spin_left = random.choice([True, False])
-
+        
     def get_pos(self):
+        """
+        Returns the position of the sun
+        """
         return self.pos
-
+    
     def get_new_dim(self):
+        """
+        Returns the dimensions of the sun
+        """
         return self.new_dim
-
+    
     def is_shrinking(self):
+        """
+        Returns whether or not the sun has been clicked
+        """
         return self.shrinking
-
+    
     def make_shrink(self):
+        """
+        Make the sun shrink after being clicked
+        """
         self.shrinking = True
-
+   
     def draw(self, canvas):
+        """
+        Handles all the behaviors of the sun
+        """
         if self.spin_left:
             self.angle -= 0.01
         else:
             self.angle += 0.01
-
+        
         if not self.from_flower:
             self.pos[1] += 0.5
-
+        
         if self.shrinking:
             self.new_dim[0] = self.new_dim[0] * 0.9
             self.new_dim[1] = self.new_dim[1] * 0.9
@@ -481,61 +552,82 @@ class Sun:
         else:
             canvas.draw_image(sun_image, sun_info.get_center(), sun_info.get_size(),
                           self.pos, desired_sun_dim, self.angle)
+        
 
-
-# Class storing properties of a pea
 class Pea:
+    """
+    Class storing properties of a pea
+    """
     def __init__(self, pos, lane):
         self.pos = pos
         self.lane = lane
-
+    
     def get_pos(self):
+        """
+        Returns the position of the pea
+        """
         return self.pos
-
+    
     # Move the pea to the right
     def update(self):
+        """
+        Moves the pea to the right
+        """
         self.pos[0] += pea_vel
-
-    # Detect collisions with zombies
+     
     def collide(self, zombie):
-        return (self.lane == zombie.get_lane() and
+        """
+        Detect collisions between the pea and zombies
+        """
+        return (self.lane == zombie.get_lane() and 
                math.fabs(zombie.get_pos()[0] - self.pos[0]) <= 10)
-
+    
     def draw(self, canvas):
+        """
+        Updates the pea on the canvas
+        """
         canvas.draw_image(pea_image, pea_info.get_center(), pea_info.get_size(),
                           self.pos, desired_pea_dim)
-
-
-# Class storing properties of a seed packet
+    
+    
 class Seed:
+    """
+    Class storing properties of a seed packet
+    """
     def __init__(self, image, selected):
         self.image = image
         self.selected = selected
-
+        
     def change_selection(self):
+        """
+        Returns whether or not the seed has been selected
+        """
         self.selected = not self.selected
-
+        
     def draw(self, canvas, pos):
+        """
+        Updates the seed packet on the canvas
+        """
         if self.selected:
             canvas.draw_image(self.image, seed_info.get_center(), seed_info.get_size(),
                           pos, desired_selectedseed_dim)
         else:
             canvas.draw_image(self.image, seed_info.get_center(), seed_info.get_size(),
                           pos, desired_seed_dim)
+            
 
+        
+#################################################################################################################        
+# IMAGE INFO #     
+    
 
-
-#################################################################################################################
-
-
-
-# ImageInfo of important images
+    
 day_background_info = ImageInfo([FRAME_DIM[0] / 2, FRAME_DIM[1] / 2], FRAME_DIM)
 splash_info = ImageInfo([SPLASH_DIM[0] / 2, SPLASH_DIM[1] / 2], SPLASH_DIM)
-seed_info = ImageInfo([SEED_DIM[0] / 2, SEED_DIM[1] / 2], SEED_DIM)
+seed_info = ImageInfo([SEED_DIM[0] / 2, SEED_DIM[1] / 2], SEED_DIM) 
 sun_info = ImageInfo([SUN_DIM[0] / 2, SUN_DIM[1] / 2], SUN_DIM)
 sunflower_info = ImageInfo([SUNFLOWER_DIM[0] / 2, SUNFLOWER_DIM[1] / 2], SUNFLOWER_DIM)
-peashooter_info = ImageInfo([PEASHOOTER_DIM[0] / 2, PEASHOOTER_DIM[1] / 2], PEASHOOTER_DIM)
+peashooter_info = ImageInfo([PEASHOOTER_DIM[0] / 2, PEASHOOTER_DIM[1] / 2], PEASHOOTER_DIM) 
 pea_info = ImageInfo([PEA_DIM[0] / 2, PEA_DIM[1] / 2], PEA_DIM)
 zombie_info = ImageInfo([ZOMBIE_DIM[0] / 2, ZOMBIE_DIM[1] / 2], ZOMBIE_DIM)
 conehead_info = ImageInfo([CONEHEAD_DIM[0] / 2, CONEHEAD_DIM[1] / 2], CONEHEAD_DIM)
@@ -547,19 +639,23 @@ wave_info = ImageInfo([WAVE_DIM[0] / 2, WAVE_DIM[1] / 2], WAVE_DIM)
 sunscore_info = ImageInfo([SUNSCORE_DIM[0] / 2, SUNSCORE_DIM[1] / 2], SUNSCORE_DIM)
 
 
+    
+#################################################################################################################    
+# HELPER FUNCTIONS #        
 
-#################################################################################################################
-# HELPER FUNCTIONS #
 
-
-
-# Finds the distance between two points
+    
 def dist(p1, p2):
+    """
+    Finds the distance between two points
+    """
     return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
 
-# Create grid to place plants onto
 def create_grid():
+    """
+    Creates the grid to place plants onto
+    """
     grid_pos_group = []
     for y in range(5):
         for x in range(9):
@@ -568,18 +664,22 @@ def create_grid():
     return grid_pos_group
 
 
-# Add seed packets to the seed group
 def add_seeds():
+    """
+    Adds seeds to the seed group
+    """
     seed_group.append(Seed(sunflower_seed_image, False))
     seed_group.append(Seed(peashooter_seed_image, False))
     seed_group.append(Seed(walnut_seed_image, False))
-
-
-# new game or new wave
+    
+    
 def reset():
+    """
+    Resets during new game or new wave
+    """
     global game_started, highscore, score, zombie_vel, time, time2, time3
     global seed_selected, shovel_selected, new_wave_flash
-
+    
     highscore = score
     zombie_vel = 0.18
     time = 0
@@ -587,37 +687,33 @@ def reset():
     time3 = 0
     seed_selected = False
     shovel_selected = False
-
+    new_wave_flash = False
+    
+    # stop timers
     sun_timer.stop()
     zombie_timer.stop()
     conehead_timer.stop()
     bucket_timer.stop()
     zombie_groan_timer.stop()
-
-
     zombie_timer2.stop()
     zombie_timer3.stop()
-
     wave2_zombie_timer.stop()
     wave2_conehead_timer.stop()
     wave2_bucket_timer.stop()
-
     wave3_zombie_timer.stop()
     wave3_conehead_timer.stop()
     wave3_bucket_timer.stop()
-
     score_zombie_timer.stop()
     score_conehead_timer.stop()
     score_bucket_timer.stop()
-
     conehead_timer.stop()
     conehead_timer2.stop()
     conehead_timer3.stop()
-
     bucket_timer.stop()
     bucket_timer2.stop()
     bucket_timer3.stop()
-
+    
+    # remove game elements
     for sun in set(sun_group):
         sun_group.remove(sun)
     for zombie in set(zombie_group):
@@ -626,21 +722,22 @@ def reset():
         pea_group.remove(pea)
     for plant in set(plant_group):
         plant_group.remove(plant)
+    
+    
 
-    new_wave_flash = False
-
-
-#################################################################################################################
-# HANDLERS #
-
+#################################################################################################################    
+# CLICK AND TIMER HANDLERS #
 
 
-# Mouse click handler
+
 def mouseclick_handler(pos):
+    """
+    Handles all mouse clicks
+    """
     global seed_selected, sun_count, plant_type, sun_cost, plant_image, zombie_vel, score, wave
     global tower_indicator, seed_group, game_started, show_instr, show_score, highscore, shovel_selected
-
-    # menu buttons
+    
+    # Menu buttons
     if show_instr:
         show_instr = False
         return
@@ -657,19 +754,17 @@ def mouseclick_handler(pos):
         elif 562 <= pos[0] <= 640:
             show_score = True
             return
-
-    # Check to remove clicked suns
+    
+    # Clicked suns
     for sun in set(sun_group):
         if dist(pos, sun.get_pos()) <= sun.get_new_dim()[0] / 2 and not sun.is_shrinking():
             sun_sounds()
             sun.make_shrink()
-            #sun_group.remove(sun)
             sun_count += sun_value
             return
-
-    # new game button
+    
+    # New game button
     if pos[0] >= 895 and pos[1] <= 56:
-
         reset()
         game_started = False
         day_soundtrack.rewind()
@@ -680,16 +775,16 @@ def mouseclick_handler(pos):
         score = 0
         wave = 1
         return
-
-    # Find which plant to dig up
+        
+    # Remove plant after selecting shovel
     if shovel_selected:
         shovel_selected = False
 
-        if (pos[0] <= LEFT_EDGE_GRID or pos[0] >= RIGHT_EDGE_GRID or
+        if (pos[0] <= LEFT_EDGE_GRID or pos[0] >= RIGHT_EDGE_GRID or 
             pos[1] >= BOTTOM_EDGE_GRID or pos[1] <= TOP_EDGE_GRID):
             beep_sounds()
             return
-
+        
         digging_sounds()
         smallest_dist = 9999
         plant_pos = []
@@ -700,17 +795,14 @@ def mouseclick_handler(pos):
         for plant in plant_group:
             if plant.get_pos()[0] == plant_pos[0] and plant.get_pos()[1] == plant_pos[1]:
                 plant_group.remove(plant)
-
-
-    # If shovel is clicked
+        
+    # Click shovel    
     elif 815 <= pos[0] <= 890 and pos[1] <= 60:
         shovel_selected = True
         drop_sounds()
-
-
-    # If plant seed was already selected
+            
+    # Plant a seed
     if seed_selected:
-
         # Increase seed size again
         if plant_image == sunflower_tower_image:
             seed_group[0].change_selection()
@@ -718,14 +810,14 @@ def mouseclick_handler(pos):
             seed_group[1].change_selection()
         elif plant_image == walnut_tower_image:
             seed_group[2].change_selection()
-
-        # Check if player can afford the plant
-        if sun_count - sun_cost < 0 or (pos[0] <= LEFT_EDGE_GRID or pos[0] >= RIGHT_EDGE_GRID or
+        
+        # Check for plant's sun cost
+        if sun_count - sun_cost < 0 or (pos[0] <= LEFT_EDGE_GRID or pos[0] >= RIGHT_EDGE_GRID or 
             pos[1] >= BOTTOM_EDGE_GRID or pos[1] <= TOP_EDGE_GRID):
             beep_sounds()
             seed_selected = False
             return
-
+        
         # Find the nearest grid location to the click
         smallest_dist = 9999
         plant_pos = []
@@ -733,32 +825,30 @@ def mouseclick_handler(pos):
             if dist(pos, grid_pos) < smallest_dist:
                 smallest_dist = dist(pos, grid_pos)
                 plant_pos = grid_pos
-
+        
         # Prevents putting plants on top of one another
         for plant in plant_group:
             if plant_pos == plant.get_pos():
                 beep_sounds()
                 seed_selected = False
                 return
-
+        
         # Plants a new plant
         lane = (plant_pos[1] - first_square[1]) / dist_squares[1]
         health = plant_health
-        # If walnut, give more health
         if tower_indicator == 3:
             health *= 4
         new_plant = Plant(sun_cost, plant_image, plant_pos, tower_indicator, lane, health)
         plant_group.add(new_plant)
-
         drop_sounds()
         sun_count -= sun_cost
         seed_selected = False
-
-    # If plant seed has not been selected
+        
+    # Clicked seed packet
     else:
         if 40 <= pos[0] <= 180:
             clicked = False
-
+            
             if 80 <= pos[1] <= 180:
                 clicked = True
                 plant_image = sunflower_tower_image
@@ -768,80 +858,97 @@ def mouseclick_handler(pos):
                 clicked = True
                 plant_image = peashooter_tower_image
                 tower_indicator = 2
-                sun_cost = 100
+                sun_cost = 100  
             elif 330 <= pos[1] <= 440:
                 clicked = True
                 plant_image = walnut_tower_image
                 tower_indicator = 3
                 sun_cost = 50
-
+                
             if clicked:
                 digging_sounds()
                 seed_selected = True
                 seed_group[tower_indicator - 1].change_selection()
-
-
-# Spawn a new sun on a random part of the grid (sun_timer handler)
+    
+      
 def sun_spawner():
+    """
+    Spawn a new sun in random location
+    """
     global sun_group
     sun_pos = [random.randrange(LEFT_EDGE_GRID, 880), -50]
     new_sun = Sun(sun_pos, False)
-    sun_group.add(new_sun)
-
-
-# Spawn a sun on top of the sunflowers (sunflower_sun_timer handler)
+    sun_group.add(new_sun) 
+        
+        
 def sunflower_spawner():
+    """
+    Spawn sun on top of sunflowers
+    """
     global sun_group
     for plant in plant_group:
         if plant.get_tower_indicator() == 1:
             sun_group.add(Sun([plant.get_pos()[0], plant.get_pos()[1] + 30], True))
+             
 
-
-# Spawn peas from the peashooters (pea_timer handler)
 def pea_spawner():
+    """
+    Spawn peas from the peashooters
+    """
     for plant in plant_group:
         if plant.get_tower_indicator() == 2:
             plant.shoot(zombie_group)
 
-
-# Spawn zombies (zombie_timer handler)
+                      
 def zombie_spawner():
+    """
+    Spawn zombies
+    """
     global zombie_group
     lane = random.randrange(5)
-    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane]
+    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane] 
     new_zombie = Zombie(zombie_pos, lane, 10)
     zombie_group.add(new_zombie)
-
-
-# Spawn zombies (zombie_timer handler)
+    
+              
 def conehead_spawner():
+    """
+    Spawn coneheads
+    """
     global zombie_group
     lane = random.randrange(5)
-    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane]
+    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane] 
     new_zombie = Zombie(zombie_pos, lane, 29)
     zombie_group.add(new_zombie)
-
-
-# Spawn zombies (zombie_timer handler)
+    
+              
 def bucket_spawner():
+    """
+    Spawn bucketheads
+    """
     global zombie_group
     lane = random.randrange(5)
-    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane]
+    zombie_pos = [FRAME_DIM[0], first_square[1] + dist_squares[1] * lane] 
     new_zombie = Zombie(zombie_pos, lane, 45)
     zombie_group.add(new_zombie)
-
-
-# Plays a random zombie groan (zombie_groan_timer handler)
+    
+       
 def zombie_groans():
+    """
+    Randomly play a zombie groan sound
+    """
     groan_list = []
     groan_list.append(groan_sound1)
     groan_list.append(groan_sound2)
     groan_list.append(groan_sound3)
     groan_list.append(groan_sound4)
     random.choice(groan_list).play()
-
+    
 
 def zombie_hits():
+    """
+    Play sound when zombie is hit by a pea
+    """
     hit_list = []
     hit_list.append(splat_sound1)
     hit_list.append(splat_sound2)
@@ -854,6 +961,9 @@ def zombie_hits():
     random.choice(hit_list).play()
 
 def pea_shoot():
+    """
+    Play sound when peashooter shoots
+    """
     shoot_list = []
     shoot_list.append(shoot_sound1)
     shoot_list.append(shoot_sound2)
@@ -865,8 +975,11 @@ def pea_shoot():
     shoot_list.append(shoot_sound8)
     random.choice(shoot_list).play()
 
-
+    
 def drop_sounds():
+    """
+    Play sound seed is planted
+    """
     drop_list = []
     drop_list.append(drop_sound1)
     drop_list.append(drop_sound2)
@@ -874,8 +987,12 @@ def drop_sounds():
     drop_list.append(drop_sound4)
     drop_list.append(drop_sound5)
     random.choice(drop_list).play()
-
+    
+    
 def digging_sounds():
+    """
+    Play sound when seed is selected (or plant is removed)
+    """
     digging_list = []
     digging_list.append(digging_sound1)
     digging_list.append(digging_sound2)
@@ -887,7 +1004,11 @@ def digging_sounds():
     digging_list.append(digging_sound8)
     random.choice(digging_list).play()
 
+    
 def sun_sounds():
+    """
+    Play sound sun is clicked
+    """
     sun_list = []
     sun_list.append(sun_sound1)
     sun_list.append(sun_sound2)
@@ -901,9 +1022,13 @@ def sun_sounds():
     sun_list.append(sun_sound10)
     sun_list.append(sun_sound11)
     sun_list.append(sun_sound12)
-    random.choice(sun_list).play()
-
+    random.choice(sun_list).play() 
+    
+    
 def beep_sounds():
+    """
+    Play sound when there is a seed selection error (i.e., cannot afford plant)
+    """
     beep_list = []
     beep_list.append(beep_sound1)
     beep_list.append(beep_sound2)
@@ -912,29 +1037,31 @@ def beep_sounds():
     beep_list.append(beep_sound5)
     random.choice(beep_list).play()
 
+    
 def score35_handler():
+    """
+    Handle changes of skipping to wave 2
+    """
     global sun_count, wave, score, seed_selected, shovel_selected, new_wave_flash, new_wave_height
     global not_run_wave2_yet, not_run_wave3_yet
-
-    not_run_wave2_yet = True
-    not_run_wave3_yet = True
-
+    
     sun_count = 500
     wave = 2
     score = 35
-    seed_selected = False
-    shovel_selected = False
-    day_soundtrack.pause()
-    third_soundtrack.rewind()
-
     time = 1000
     time2 = 0
     time3 = 0
-
-    new_wave_flash = True
     new_wave_height = 0
-
-
+    not_run_wave2_yet = True
+    not_run_wave3_yet = True
+    seed_selected = False
+    shovel_selected = False
+    new_wave_flash = True
+    
+    day_soundtrack.pause()
+    third_soundtrack.rewind()
+                      
+    # remove game elements
     for sun in set(sun_group):
         sun_group.remove(sun)
     for zombie in set(zombie_group):
@@ -943,53 +1070,50 @@ def score35_handler():
         pea_group.remove(pea)
     for plant in set(plant_group):
         plant_group.remove(plant)
-
+    
+    # stop timers
     zombie_timer2.stop()
     conehead_timer2.stop()
-    bucket_timer2.stop()
-
+    bucket_timer2.stop()  
     zombie_timer3.stop()
     conehead_timer3.stop()
-    bucket_timer3.stop()
-
+    bucket_timer3.stop()        
     wave2_zombie_timer.stop()
     wave2_conehead_timer.stop()
     wave2_bucket_timer.stop()
-
     wave3_zombie_timer.stop()
     wave3_conehead_timer.stop()
     wave3_bucket_timer.stop()
-
     score_zombie_timer.stop()
     score_conehead_timer.stop()
     score_bucket_timer.stop()
-
-
+    
+    
 def score80_handler():
+    """
+    Handle changes of skipping to wave 3
+    """
     global sun_count, wave, time, time, seed_selected, shovel_selected, new_wave_flash, new_wave_height
     global not_run_wave2_yet, not_run_wave3_yet, score
-
-    not_run_wave2_yet = True
-    not_run_wave3_yet = True
-
+      
     sun_count = 700
     wave = 3
     score = 80
-    day_soundtrack.pause()
-
-    seed_selected = False
-    shovel_selected = False
-
     time = 1000
     time2 = 0
     time3 = 0
-
-    new_wave_flash = True
     new_wave_height = 0
-
+    
+    not_run_wave2_yet = True
+    not_run_wave3_yet = True
+    new_wave_flash = True
+    seed_selected = False
+    shovel_selected = False
+    
+    day_soundtrack.pause()
     second_soundtrack.rewind()
-
-
+    
+    # remove game elements
     for sun in set(sun_group):
         sun_group.remove(sun)
     for zombie in set(zombie_group):
@@ -998,60 +1122,61 @@ def score80_handler():
         pea_group.remove(pea)
     for plant in set(plant_group):
         plant_group.remove(plant)
-
+    
+    # stop timers
     zombie_timer2.stop()
     conehead_timer2.stop()
-    bucket_timer2.stop()
-
+    bucket_timer2.stop()            
     zombie_timer3.stop()
     conehead_timer3.stop()
     bucket_timer3.stop()
-    ###
-
     wave2_zombie_timer.stop()
     wave2_conehead_timer.stop()
     wave2_bucket_timer.stop()
-
     wave3_zombie_timer.stop()
     wave3_conehead_timer.stop()
     wave3_bucket_timer.stop()
-
     score_zombie_timer.stop()
     score_conehead_timer.stop()
     score_bucket_timer.stop()
-
-
+    
+    
+    
 #################################################################################################################
-# DRAWING AND COLLISIONS #
-
-
-
-# Process group of sprites
+# DRAWING AND COLLISIONS #   
+ 
+    
+        
 def draw_group(canvas, group):
+    """
+    Process group of sprites
+    """
     for element in set(group):
         element.draw(canvas)
-
-
-# Detect pea/zombie collisions
+        
+        
 def pea_zombie_collide():
+    """
+    Detect when peas hit a zombie
+    """
     global score, zombie_vel, wave, time, new_wave_flash, new_wave_height, sun_count
     zombie_remove_group = set([])
     pea_remove_group = set([])
-
+    
     for zombie in set(zombie_group):
         for pea in set(pea_group):
-
-            # Pea hit a zombie
+            # Pea hits a zombie
             if pea.collide(zombie):
                 zombie.pea_hit()
                 zombie_hits()
-                #splat_sound.play()
                 pea_remove_group.add(pea)
+                
                 # If zombie dies
                 if zombie.get_health() <= 0:
                     zombie_remove_group.add(zombie)
                     score += 1
                     zombie_vel += 0.005
+                    
                     # If the next wave is reached
                     if score == wave1_cap or score == wave2_cap:
                         reset()
@@ -1071,16 +1196,18 @@ def pea_zombie_collide():
                             if sun_count < 500:
                                 sun_count = 500
                         return
-
+                         
     # Remove the necessary peas and zombies
     for zombie in zombie_remove_group:
         zombie_group.remove(zombie)
     for pea in pea_remove_group:
-        pea_group.remove(pea)
+        pea_group.remove(pea) 
 
-
-# Detect plant/zombie collisions
+               
 def plant_zombie_collide(zombie):
+    """
+    Detect if zombie are eating a plant
+    """
     for plant in set(plant_group):
         if plant.collide(zombie):
             plant.hit(zombie)
@@ -1088,22 +1215,23 @@ def plant_zombie_collide(zombie):
             if plant.get_health() <= 0:
                 plant_group.remove(plant)
             return True
-
-
-# Handler to draw on canvas (60 times per second)
-def draw(canvas):
+        
+        
+def draw(canvas): 
+    """
+    Handles all behaviors of the game on the canvas
+    """
     global highscore, time, time2, time3, game_started, sun_count, score, wave, new_wave_height
     global not_run_wave2_yet, not_run_wave3_yet, not_run_150_yet
-
-    #TODOVDNAKSDNVKADSVANDKVLANDSV
-    #if time == 1:
-        #zombie_spawner()
-        #conehead_spawner()
-        #bucket_spawner()
-
+    
+    # Start timers
     if game_started:
+        sun_timer.start()
+        zombie_timer.start()
+        conehead_timer.start()
+        bucket_timer.start()
+        zombie_groan_timer.start()
         time += 1
-        # Spawns more zombies as time goes along
         if time > 5400:
             zombie_timer2.start()
             conehead_timer2.start()
@@ -1112,12 +1240,10 @@ def draw(canvas):
             zombie_timer3.start()
             conehead_timer3.start()
             bucket_timer3.start()
-
-        # Replay soundtrack
         if time % 9000 and wave == 1:
             day_soundtrack.play()
-
-
+    
+    # Replay soundtracks
     if wave == 2:
         time2 += 1
         if time2 % 7000:
@@ -1126,33 +1252,33 @@ def draw(canvas):
         time3 += 1
         if time3 % 9400:
             third_soundtrack.play()
-
+    
+    # Handles zombie timers
     if wave == 2 and not_run_wave2_yet:
         not_run_wave2_yet = False
         wave2_zombie_timer.start()
         wave2_conehead_timer.start()
         wave2_bucket_timer.start()
-
     if wave == 3 and not_run_wave3_yet:
         not_run_wave3_yet = False
         wave3_zombie_timer.start()
         wave3_conehead_timer.start()
-        wave3_bucket_timer.start()
-
+        wave3_bucket_timer.start()  
     if score == 120 and not_run_150_yet:
         not_run_150_yet = False
         score_zombie_timer.start()
         score_conehead_timer.start()
         score_bucket_timer.start()
-
+    
+    # Fix zombie hit bug
     if not zombie_group:
         for plant in plant_group:
             plant.not_being_hit()
-
+    
     # Draw the background
-    canvas.draw_image(day_background_image, day_background_info.get_center(), day_background_info.get_size(),
+    canvas.draw_image(day_background_image, day_background_info.get_center(), day_background_info.get_size(), 
                       day_background_info.get_center(), day_background_info.get_size())
-
+    
     # Draw the menu if the game hasn't started
     if not game_started:
         canvas.draw_image(splash_image, splash_info.get_center(), splash_info.get_size(),
@@ -1172,97 +1298,89 @@ def draw(canvas):
             canvas.draw_text(str(highscore), [641, 295], 50, 'White', 'monospace')
         return
 
-    sun_timer.start()
-    #pea_timer.start()
-    zombie_timer.start()
-    conehead_timer.start()
-    bucket_timer.start()
-    zombie_groan_timer.start()
-    #sunflower_sun_timer.start()
-
     # Draw wave count in top left corner
     canvas.draw_image(wave_image, wave_info.get_center(), wave_info.get_size(),
                       [60, 30], desired_wave_dim)
     canvas.draw_text(str(wave), [90, 45], 40, "White", 'monospace')
-
+    
     # Draw sun and score in bottom right corner
     canvas.draw_image(sunscore_image, sunscore_info.get_center(), sunscore_info.get_size(),
                       [850, 600], desired_sunscore_dim)
     canvas.draw_text(str(sun_count), [770, 614], 40, 'White', 'monospace')
     canvas.draw_text(str(score), [940, 614], 40, 'White', 'monospace')
-
-    # Draw seed packets
+    
+    # Handles seed packets
     counter = 1
     for seed in seed_group:
         seed.draw(canvas, [first_seed_pos[0], first_seed_pos[1] * counter])
         counter += 1
-
-    # new game button
+    
+    # New game button
     canvas.draw_image(newgame_image, [170, 92], [340, 184], [960, 30], [130, 60])
-
-    # shovel button
+    
+    # Handles shovel button
     if shovel_selected:
         canvas.draw_image(shovel_image, [69, 70], [139, 141], [850, 30], [40, 30])
     else:
         canvas.draw_image(shovel_image, [69, 70], [139, 141], [850, 30], [80, 60])
-
+    
     # Draw the planted plants on the grid
     draw_group(canvas, plant_group)
-
+    
     # Draw zombies and detect if collision with a plant
     for zombie in zombie_group:
         zombie.draw(canvas)
         if not plant_zombie_collide(zombie):
             zombie.update()
-
+    
     # Draw the suns on the grid
     draw_group(canvas, sun_group)
-
+    
     # Draw the peas on the grid
     for pea in pea_group:
         pea.draw(canvas)
         canvas.draw_image(peashadow_image, [265, 114], [529, 227], [pea.get_pos()[0], pea.get_pos()[1] + 50], desired_pea_dim)
         pea.update()
-
-
-
+    
     # Detect collisions between peas and zombies
-    pea_zombie_collide()
-
+    pea_zombie_collide()   
+    
+    # Handles new game sign
     if new_wave_flash:
         canvas.draw_text("NEW WAVE!", [FRAME_DIM[0] / 2, new_wave_height], 50, "White", "monospace")
         new_wave_height += 1
-
+    
     # Detect game overs
     for zombie in zombie_group:
         if zombie.get_pos()[0] < game_over_line:
             reset()
             gameover_sound.play()
-            game_started = False
             day_soundtrack.rewind()
             second_soundtrack.rewind()
             third_soundtrack.rewind()
             day_soundtrack.play()
+            
+            game_started = False
             sun_count = 50
             score = 0
             wave = 1
             highscore = score
-
+             
             zombie_timer2.stop()
             conehead_timer2.stop()
             bucket_timer2.stop()
-
             zombie_timer3.stop()
             conehead_timer3.stop()
             bucket_timer3.stop()
-
+            
 
 
 #################################################################################################################
-
-
-
-# Initialize stuff
+# INITIALIZE AND RUN #        
+ 
+    
+    
+# Initialize game elements    
 sun_group = set([])
 plant_group = set([])
 pea_group = set([])
@@ -1270,40 +1388,32 @@ zombie_group = set([])
 seed_group = []
 add_seeds()
 
-sun_timer = simplegui.create_timer(sun_spawn_freq, sun_spawner)
-pea_timer = simplegui.create_timer(pea_shoot_freq, pea_spawner)
-sunflower_sun_timer = simplegui.create_timer(sunflower_spawn_freq, sunflower_spawner)
-
-zombie_timer = simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-zombie_timer2 = simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-zombie_timer3 = simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-
-wave2_zombie_timer = simplegui.create_timer(zombie_spawn_freq * 1.5, zombie_spawner)
-wave2_conehead_timer = simplegui.create_timer(conehead_spawn_freq * 1.5, conehead_spawner)
-wave2_bucket_timer = simplegui.create_timer(bucket_spawn_freq * 1.5, bucket_spawner)
-
-wave3_zombie_timer = simplegui.create_timer(zombie_spawn_freq * 4, zombie_spawner)
-wave3_conehead_timer = simplegui.create_timer(conehead_spawn_freq * 4, conehead_spawner)
-wave3_bucket_timer = simplegui.create_timer(bucket_spawn_freq * 4, bucket_spawner)
-
-score_zombie_timer = simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-score_conehead_timer = simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-score_bucket_timer = simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-
-conehead_timer = simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-conehead_timer2 = simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-conehead_timer3 = simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-
-bucket_timer = simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-bucket_timer2 = simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-bucket_timer3 = simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-
-zombie_groan_timer = simplegui.create_timer(zombie_groan_freq, zombie_groans)
-
+# Start timers
+sun_timer = 			simplegui.create_timer(sun_spawn_freq, sun_spawner)
+pea_timer = 			simplegui.create_timer(pea_shoot_freq, pea_spawner)
+sunflower_sun_timer = 	simplegui.create_timer(sunflower_spawn_freq, sunflower_spawner)
+zombie_timer = 			simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+zombie_timer2 =			simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+zombie_timer3 = 		simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+wave2_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq * 1.5, zombie_spawner)
+wave2_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq * 1.5, conehead_spawner)
+wave2_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq * 1.5, bucket_spawner)
+wave3_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq * 4, zombie_spawner)
+wave3_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq * 4, conehead_spawner)
+wave3_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq * 4, bucket_spawner)
+score_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+score_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+score_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+conehead_timer = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+conehead_timer2 = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+conehead_timer3 = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+bucket_timer = 			simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+bucket_timer2 = 		simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+bucket_timer3 = 		simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+zombie_groan_timer = 	simplegui.create_timer(zombie_groan_freq, zombie_groans)
 
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("Plants vs. Zombies", FRAME_DIM[0], FRAME_DIM[1])
-
 frame.set_draw_handler(draw)
 frame.set_mouseclick_handler(mouseclick_handler)
 button1 = frame.add_button('Skip to Wave 2 (score = 35)', score35_handler)
@@ -1312,3 +1422,4 @@ button2 = frame.add_button('Skip to Wave 3 (score = 80)', score80_handler)
 # Start the frame animation
 frame.start()
 day_soundtrack.play()
+
