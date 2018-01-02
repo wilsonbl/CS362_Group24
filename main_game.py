@@ -2,14 +2,14 @@
 # Created by Austin Moninger in COMP 160 (Fall 2017)
 # Submitted on 12/01/2017
 
-# 	TABLE OF CONTENTS			 			 #
-#		line 110 - IMAGES AND SOUNDS		 #
-#		line 221 - CLASSES				 	 #
-#		line 621 - IMAGE INFO		 		 #
-#		line 644 - HELPER FUNCTIONS		 	 #
+#   TABLE OF CONTENTS                        #
+#		line 110 - IMAGES AND SOUNDS         #
+#		line 221 - CLASSES                   #
+#		line 621 - IMAGE INFO                #
+#		line 644 - HELPER FUNCTIONS          #
 #		line 729 - CLICK AND TIMER HANDLERS  #
-#		line 1146 - DRAWING AND COLLISIONS	 #
-#		line 1379 - INITIALIZE AND RUN		 #
+#		line 1146 - DRAWING AND COLLISIONS   #
+#		line 1379 - INITIALIZE AND RUN       #
 
 
 
@@ -111,44 +111,44 @@ not_run_150_yet = True
 
 
 
-day_background_image = 		simplegui.load_image("https://www.dropbox.com/s/62atmr4nbx2ojjj/day_background.png?dl=1")
-sun_image = 				simplegui.load_image("https://www.dropbox.com/s/2gjjer5e9eajedc/Sun_PvZ2.png?dl=1")
-shovel_image = 				simplegui.load_image("https://www.dropbox.com/s/vc6of6ec5hu09s9/Shovel.jpg?dl=1")
+day_background_image =      simplegui.load_image("https://www.dropbox.com/s/62atmr4nbx2ojjj/day_background.png?dl=1")
+sun_image =                 simplegui.load_image("https://www.dropbox.com/s/2gjjer5e9eajedc/Sun_PvZ2.png?dl=1")
+shovel_image =              simplegui.load_image("https://www.dropbox.com/s/vc6of6ec5hu09s9/Shovel.jpg?dl=1")
 
-sunflower_seed_image = 		simplegui.load_image("https://www.dropbox.com/s/89y58jbktvafuly/sunflowerseed.png?dl=1")
-peashooter_seed_image = 	simplegui.load_image("https://www.dropbox.com/s/6ugi6meynohl47j/peashooterseed.png?dl=1")
-snowpea_seed_image = 		simplegui.load_image("https://www.dropbox.com/s/bv8gap0tqkn93eh/snowpea.png?dl=1")
-walnut_seed_image = 		simplegui.load_image("https://www.dropbox.com/s/enlf1u3yejgndt3/Screen%20Shot%202017-11-18%20at%203.38.10%20PM.png?dl=1")
+sunflower_seed_image =      simplegui.load_image("https://www.dropbox.com/s/89y58jbktvafuly/sunflowerseed.png?dl=1")
+peashooter_seed_image =     simplegui.load_image("https://www.dropbox.com/s/6ugi6meynohl47j/peashooterseed.png?dl=1")
+snowpea_seed_image =        simplegui.load_image("https://www.dropbox.com/s/bv8gap0tqkn93eh/snowpea.png?dl=1")
+walnut_seed_image =         simplegui.load_image("https://www.dropbox.com/s/enlf1u3yejgndt3/Screen%20Shot%202017-11-18%20at%203.38.10%20PM.png?dl=1")
 
-sunflower_tower_image = 	simplegui.load_image("https://www.dropbox.com/s/fuj6bcrimir1mx0/HD_Sunflower.png?dl=1")
-sunflowerhit_tower_image = 	simplegui.load_image("https://www.dropbox.com/s/o3jjmxae2me738m/litsunflower.png?dl=1")
-peashooter_tower_image = 	simplegui.load_image("https://www.dropbox.com/s/0sqvo61m5tx68wh/Pea_Shooter.png?dl=1")
+sunflower_tower_image =     simplegui.load_image("https://www.dropbox.com/s/fuj6bcrimir1mx0/HD_Sunflower.png?dl=1")
+sunflowerhit_tower_image =  simplegui.load_image("https://www.dropbox.com/s/o3jjmxae2me738m/litsunflower.png?dl=1")
+peashooter_tower_image =    simplegui.load_image("https://www.dropbox.com/s/0sqvo61m5tx68wh/Pea_Shooter.png?dl=1")
 peashooterhit_tower_image = simplegui.load_image("https://www.dropbox.com/s/iy0ujwqgxjscg9q/hitpeashooter.png?dl=1")
 snowpea_tower_image =       simplegui.load_image("https://www.dropbox.com/s/3d65rgip2ov8ukc/Snow_Pea.png?dl=1")
-walnut_tower_image = 		simplegui.load_image("https://www.dropbox.com/s/bbvzhu8t2q62zio/Wall-nut-hd.png?dl=1")
-walnuthit_tower_image = 	simplegui.load_image("https://www.dropbox.com/s/4b32j5zkouxgzpc/hitwalnut.png?dl=1")
-oldwalnut_image = 			simplegui.load_image("https://www.dropbox.com/s/zzbyufe0inz8pnm/Wallnut_cracked1.png?dl=1")
-oldwalnuthit_image = 		simplegui.load_image("https://www.dropbox.com/s/7zi86qgopqu1yrp/hitcrackedwalnut.png?dl=1")
+walnut_tower_image =        simplegui.load_image("https://www.dropbox.com/s/bbvzhu8t2q62zio/Wall-nut-hd.png?dl=1")
+walnuthit_tower_image =     simplegui.load_image("https://www.dropbox.com/s/4b32j5zkouxgzpc/hitwalnut.png?dl=1")
+oldwalnut_image =           simplegui.load_image("https://www.dropbox.com/s/zzbyufe0inz8pnm/Wallnut_cracked1.png?dl=1")
+oldwalnuthit_image =        simplegui.load_image("https://www.dropbox.com/s/7zi86qgopqu1yrp/hitcrackedwalnut.png?dl=1")
 
-peashadow_image = 			simplegui.load_image("https://www.dropbox.com/s/thrp9ltsn3rxty5/shadow.png?dl=1")
-pea_image = 				simplegui.load_image("https://www.dropbox.com/s/56b2cfvee1z3olg/Pea.png?dl=1")
-hitzombie_image = 			simplegui.load_image("https://www.dropbox.com/s/rq2kabis5plevri/hitzombie.png?dl=1")
-zombie_image = 				simplegui.load_image("https://www.dropbox.com/s/lieab5uaomszh09/zombie.png?dl=1")
+peashadow_image =           simplegui.load_image("https://www.dropbox.com/s/thrp9ltsn3rxty5/shadow.png?dl=1")
+pea_image =                 simplegui.load_image("https://www.dropbox.com/s/56b2cfvee1z3olg/Pea.png?dl=1")
+hitzombie_image =           simplegui.load_image("https://www.dropbox.com/s/rq2kabis5plevri/hitzombie.png?dl=1")
+zombie_image =              simplegui.load_image("https://www.dropbox.com/s/lieab5uaomszh09/zombie.png?dl=1")
 conehead_image =            simplegui.load_image("https://www.dropbox.com/s/a19sissrln1mmy5/conehead.png?dl=1")
-coneheadhit_image = 		simplegui.load_image("https://www.dropbox.com/s/b7zh8bcyf0jps5x/coneheadhit.png?dl=1")
-bucket_image = 				simplegui.load_image("https://www.dropbox.com/s/nbg9bgcvwri6mv0/zombie_buckethead.png?dl=1")
-buckethit_image = 		    simplegui.load_image("https://www.dropbox.com/s/fr5ccnunhrcbsjt/bucketheadhit.png?dl=1")
+coneheadhit_image =         simplegui.load_image("https://www.dropbox.com/s/b7zh8bcyf0jps5x/coneheadhit.png?dl=1")
+bucket_image =              simplegui.load_image("https://www.dropbox.com/s/nbg9bgcvwri6mv0/zombie_buckethead.png?dl=1")
+buckethit_image =           simplegui.load_image("https://www.dropbox.com/s/fr5ccnunhrcbsjt/bucketheadhit.png?dl=1")
 
 splash_image =              simplegui.load_image("https://www.dropbox.com/s/fevto0xhcg5t688/plants-vs-zombies-logo.png?dl=1")
-play_image = 				simplegui.load_image("https://www.dropbox.com/s/4ww4nv78r76zl0y/play.png?dl=1")
-howtoplay_image = 			simplegui.load_image("https://www.dropbox.com/s/y1n0nmkm7u986qp/howtoplay.png?dl=1")
-instructions_image =		simplegui.load_image("https://www.dropbox.com/s/i40ic5v4emygry3/Screen%20Shot%202017-11-18%20at%207.27.44%20PM.png?dl=1")
-highscore_image =  			simplegui.load_image("https://www.dropbox.com/s/zrm1a29604m8ncd/highscore.png?dl=1")
+play_image =                simplegui.load_image("https://www.dropbox.com/s/4ww4nv78r76zl0y/play.png?dl=1")
+howtoplay_image =           simplegui.load_image("https://www.dropbox.com/s/y1n0nmkm7u986qp/howtoplay.png?dl=1")
+instructions_image =        simplegui.load_image("https://www.dropbox.com/s/i40ic5v4emygry3/Screen%20Shot%202017-11-18%20at%207.27.44%20PM.png?dl=1")
+highscore_image =           simplegui.load_image("https://www.dropbox.com/s/zrm1a29604m8ncd/highscore.png?dl=1")
 highscore_back_image =      simplegui.load_image("https://www.dropbox.com/s/0tiz23o4atab3ci/Screen%20Shot%202017-11-18%20at%202.25.53%20PM.png?dl=1")
-newgame_image = 			simplegui.load_image("https://www.dropbox.com/s/kci1dlr4mt873aj/newgame.png?dl=1")
-wave_image = 				simplegui.load_image("https://www.dropbox.com/s/eoupzjx28pc0d2r/Screen%20Shot%202017-11-18%20at%208.24.26%20PM.png?dl=1")
-sunscore_image = 			simplegui.load_image("https://www.dropbox.com/s/h2embumab678cjn/Screen%20Shot%202017-11-18%20at%208.24.04%20PM.png?dl=1")
-cooldown_image = 			simplegui.load_image("https://www.dropbox.com/s/069bxjiifzb38s6/dark.png?dl=1")
+newgame_image =             simplegui.load_image("https://www.dropbox.com/s/kci1dlr4mt873aj/newgame.png?dl=1")
+wave_image =                simplegui.load_image("https://www.dropbox.com/s/eoupzjx28pc0d2r/Screen%20Shot%202017-11-18%20at%208.24.26%20PM.png?dl=1")
+sunscore_image =            simplegui.load_image("https://www.dropbox.com/s/h2embumab678cjn/Screen%20Shot%202017-11-18%20at%208.24.04%20PM.png?dl=1")
+cooldown_image =            simplegui.load_image("https://www.dropbox.com/s/069bxjiifzb38s6/dark.png?dl=1")
 
 day_soundtrack = 			simplegui.load_sound("https://www.dropbox.com/s/qzz4jvyrzuzbl5h/maintheme.mp3?dl=1")
 second_soundtrack =         simplegui.load_sound("https://www.dropbox.com/s/nryvrqy0nwnr9bp/09-watery-graves-fast-.mp3?dl=1")
@@ -1389,28 +1389,28 @@ seed_group = []
 add_seeds()
 
 # Start timers
-sun_timer = 			simplegui.create_timer(sun_spawn_freq, sun_spawner)
-pea_timer = 			simplegui.create_timer(pea_shoot_freq, pea_spawner)
-sunflower_sun_timer = 	simplegui.create_timer(sunflower_spawn_freq, sunflower_spawner)
-zombie_timer = 			simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-zombie_timer2 =			simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-zombie_timer3 = 		simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-wave2_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq * 1.5, zombie_spawner)
-wave2_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq * 1.5, conehead_spawner)
-wave2_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq * 1.5, bucket_spawner)
-wave3_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq * 4, zombie_spawner)
-wave3_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq * 4, conehead_spawner)
-wave3_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq * 4, bucket_spawner)
-score_zombie_timer = 	simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
-score_conehead_timer = 	simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-score_bucket_timer = 	simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-conehead_timer = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-conehead_timer2 = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-conehead_timer3 = 		simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
-bucket_timer = 			simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-bucket_timer2 = 		simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-bucket_timer3 = 		simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
-zombie_groan_timer = 	simplegui.create_timer(zombie_groan_freq, zombie_groans)
+sun_timer =              simplegui.create_timer(sun_spawn_freq, sun_spawner)
+pea_timer =              simplegui.create_timer(pea_shoot_freq, pea_spawner)
+sunflower_sun_timer =    simplegui.create_timer(sunflower_spawn_freq, sunflower_spawner)
+zombie_timer =           simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+zombie_timer2 =          simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+zombie_timer3 =          simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+wave2_zombie_timer =     simplegui.create_timer(zombie_spawn_freq * 1.5, zombie_spawner)
+wave2_conehead_timer =   simplegui.create_timer(conehead_spawn_freq * 1.5, conehead_spawner)
+wave2_bucket_timer =     simplegui.create_timer(bucket_spawn_freq * 1.5, bucket_spawner)
+wave3_zombie_timer =     simplegui.create_timer(zombie_spawn_freq * 4, zombie_spawner)
+wave3_conehead_timer =   simplegui.create_timer(conehead_spawn_freq * 4, conehead_spawner)
+wave3_bucket_timer =     simplegui.create_timer(bucket_spawn_freq * 4, bucket_spawner)
+score_zombie_timer =     simplegui.create_timer(zombie_spawn_freq, zombie_spawner)
+score_conehead_timer =   simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+score_bucket_timer =     simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+conehead_timer =         simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+conehead_timer2 =        simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+conehead_timer3 =        simplegui.create_timer(conehead_spawn_freq, conehead_spawner)
+bucket_timer =           simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+bucket_timer2 =          simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+bucket_timer3 =          simplegui.create_timer(bucket_spawn_freq, bucket_spawner)
+zombie_groan_timer =     simplegui.create_timer(zombie_groan_freq, zombie_groans)
 
 # Create a frame and assign callbacks to event handlers
 frame = simplegui.create_frame("Plants vs. Zombies", FRAME_DIM[0], FRAME_DIM[1])
