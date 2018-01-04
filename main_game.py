@@ -72,6 +72,14 @@ plant_health = 300
 wave1_cap = 35
 wave2_cap = 80
 game_over_line = 255
+bob_plant = 0.07
+rotate_wallnut = 0.005
+zombie_rotate_limit = [0.4, -0.2]
+rotate_limit = 0.15
+pea_spawn = 108
+draws_per_second = 60
+sun_spawn = [420, 1320]
+wallnut_health_limit = 600
 sun_spawn_freq = 12000 
 pea_shoot_freq = 1800
 sunflower_spawn_freq = 15000
@@ -339,11 +347,11 @@ class Plant:
         if self.tower_indicator == 1 or self.tower_indicator == 2:
             # bob the plant up and down
             if self.bob_up:
-                self.bob_pos[1] += 0.07
+                self.bob_pos[1] += bob_plant
                 if self.bob_pos[1] > self.pos[1] + 2:
                     self.bob_up = False
             else:
-                self.bob_pos[1] -= 0.07
+                self.bob_pos[1] -= bob_plant
                 if self.bob_pos[1] < self.pos[1] - 2:
                     self.bob_up = True
             
@@ -353,7 +361,7 @@ class Plant:
                 # determine which image to draw based on if the plant is being eaten
                 if self.hit_indicator:
                     self.hit_counter += 1
-                if self.hit_counter % 60 < 30 and self.hit_indicator:
+                if (self.hit_counter % draws_per_second < draws_per_second / 2) and self.hit_indicator:
                     canvas.draw_image(sunflowerhit_tower_image, sunflower_info.get_center(),
                                         sunflower_info.get_size(), self.bob_pos, desired_sunflower_dim)
                 else:
@@ -362,20 +370,20 @@ class Plant:
                 self.timer_sun += 1
            
                 # spawn sun
-                if self.timer_sun == 420 or self.timer_sun % 1320 == 0:
+                if self.timer_sun == sun_spawn[0] or self.timer_sun % sun_spawn[1] == 0:
                     self.sunflower_sun_spawner()
             
             # for peashooters
             elif self.tower_indicator == 2:
                 # shoot peas
                 self.timer_pea += 1
-                if self.timer_pea % 108 == 0:
+                if self.timer_pea % pea_spawn == 0:
                     self.shoot(zombie_group)
                     
                 # determine which image to draw based on if the plant is being eaten    
                 if self.hit_indicator:
                     self.hit_counter += 1
-                if self.hit_counter % 60 < 30 and self.hit_indicator:
+                if (self.hit_counter % draws_per_second < draws_per_second / 2) and self.hit_indicator:
                     canvas.draw_image(peashooterhit_tower_image, peashooter_info.get_center(),
                                     peashooter_info.get_size(), self.bob_pos, desired_peashooter_dim)
                 else:
@@ -386,26 +394,26 @@ class Plant:
         elif self.tower_indicator == 3:
             # rock the plant back and forth
             if self.rotate_right:
-                self.angle += 0.005
-                if self.angle >= 0.15:
+                self.angle += rotate_wallnut
+                if self.angle >= rotate_limit:
                     self.rotate_right = False
             else:
-                self.angle -= 0.005
-                if self.angle <= -0.15:
+                self.angle -= rotate_wallnut
+                if self.angle <= -1 * rotate_limit:
                     self.rotate_right = True 
             
             # determine which wall-nut to draw based on health
             if self.hit_indicator:
                 self.hit_counter += 1
-            if self.health >= 600:
-                if self.hit_counter % 60 < 30 and self.hit_indicator:
+            if self.health >= wallnut_health_limit:
+                if (self.hit_counter % draws_per_second < draws_per_second / 2) and self.hit_indicator:
                     canvas.draw_image(walnuthit_tower_image, walnut_info.get_center(),
                                   walnut_info.get_size(), self.pos, desired_walnut_dim, self.angle)
                 else:
                     canvas.draw_image(walnut_tower_image, walnut_info.get_center(),
                                   walnut_info.get_size(), self.pos, desired_walnut_dim, self.angle)
             else:
-                if self.hit_counter % 60 < 30 and self.hit_indicator:
+                if (self.hit_counter % draws_per_second < draws_per_second / 2) and self.hit_indicator:
                     canvas.draw_image(oldwalnuthit_image, [50, 50], [100, 100], self.pos, desired_walnut_dim, self.angle)
                 else:
                     canvas.draw_image(oldwalnut_image, [50, 50], [100, 100], self.pos, desired_walnut_dim, self.angle)
@@ -463,12 +471,12 @@ class Zombie:
         
         # rock the zombie back and forth
         if self.rotate_right:
-            self.angle += 0.005
-            if self.angle >= 0.4:
+            self.angle += rotate_wallnut
+            if self.angle >= zombie_rotate_limit[0]:
                 self.rotate_right = False
         else:
-            self.angle -= 0.005
-            if self.angle <= -0.2:
+            self.angle -= rotate_wallnut
+            if self.angle <= zombie_rotate_limit[1]:
                 self.rotate_right = True       
         
         # determine which zombie to display based on health counter
