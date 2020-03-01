@@ -84,11 +84,11 @@ class Test(unittest.TestCase):
         plant1 = Plant(1, 1, [1, 1], 1, 1, 10)
         
         # Create zombies
-        zombie1 = Zombie(1, 1, 10)
-        zombie2 = Zombie(41, 1, 10)
-        zombie3 = Zombie(42, 1, 10)
-        zombie4 = Zombie(41, 2, 10)
-        zombie5 = Zombie(42, 2, 10)
+        zombie1 = Zombie([1, 1], 1, 10)
+        zombie2 = Zombie([41, 1], 1, 10)
+        zombie3 = Zombie([42, 1], 1, 10)
+        zombie4 = Zombie([41, 1], 2, 10)
+        zombie5 = Zombie([42, 1], 2, 10)
         
         # Collide zombies and plant
         collision1 = plant1.collide(zombie1)
