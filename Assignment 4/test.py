@@ -67,14 +67,16 @@ class Test(unittest.TestCase):
        
     def test_plant_lose_health(self):
         # Create plants
-        plant1 = Plant(1, 1, [1, 1], 1, 1, 10)  # (sun_cost, image, pos, tower_indicator, lane, health)
+        # (sun_cost, image, pos, tower_indicator, lane, health)
+        plant1 = Plant(1, 1, [1, 1], 1, 1, 10)
         plant2 = Plant(1, 1, [1, 1], 1, 1, 5)
         plant3 = Plant(1, 1, [1, 1], 1, 1, 1)
         plant4 = Plant(1, 1, [1, 1], 1, 1, -1)
         plant5 = Plant(1, 1, [1, 1], 1, 1, 10)
         
         # Create zombies
-        zombie1 = Zombie(1, 1, 10)  # (pos, lane, health)
+        # (pos, lane, health)
+        zombie1 = Zombie(1, 1, 10)  
         zombie2 = Zombie(1, 1, 0)
         
         # Have plants get hit
