@@ -124,6 +124,81 @@ class Test(unittest.TestCase):
         self.assertEqual(collision3, False)
         self.assertEqual(collision4, False)
         self.assertEqual(collision5, False)
+        
+      def test_shovel_remove_plant(self):
+        # Create Plants
+        plant1 = Plant(1, 1, [1, 1], 1, 1, 10)   # Lane 1 | Position 1
+        main_game.plant_group.add(plant1)
+        plant2 = Plant(1, 1, [2, 2], 1, 2, 10)   # Lane 2 | Position 2
+        main_game.plant_group.add(plant2)
+        plant3 = Plant(1, 1, [9, 5], 1, 3, 10)   # Lane 3 | Position 3
+        main_game.plant_group.add(plant3)        
+        plant4 = Plant(1, 1, [50, 50], 1, 4, 10)   # Lane 4 | Position 4
+        main_game.plant_group.add(plant4)        
+        plant5 = Plant(1, 1, [20, 20], 1, 5, 10) # Lane 20 | Position 5
+        main_game.plant_group.add(plant5)
+
+        self.assertEqual(len(main_game.plant_group), 5)
+		
+		# Remove Plant 1 by position
+        plant_pos = [1,1]
+        if plant1.get_pos()[0] == plant_pos[0] and plant1.get_pos()[1] == plant_pos[1]:
+            main_game.plant_group.remove(plant1)
+        self.assertEqual(len(main_game.plant_group), 5-1)
+
+		# Remove Plant 2 by position
+        plant_pos = [2,2]
+        if plant2.get_pos()[0] == plant_pos[0] and plant2.get_pos()[1] == plant_pos[1]:
+            main_game.plant_group.remove(plant2)
+        self.assertEqual(len(main_game.plant_group), 5-2)		
+
+		# Remove Plant 3 by position
+        plant_pos = [9,5]
+        if plant3.get_pos()[0] == plant_pos[0] and plant3.get_pos()[1] == plant_pos[1]:
+            main_game.plant_group.remove(plant3)
+        self.assertEqual(len(main_game.plant_group), 5-3)	
+
+		# Remove Plant 4 by position
+        plant_pos = [50,50]
+        if plant4.get_pos()[0] == plant_pos[0] and plant4.get_pos()[1] == plant_pos[1]:
+            main_game.plant_group.remove(plant4)
+        self.assertEqual(len(main_game.plant_group), 5-4)
+		
+		# Remove Plant 5 directly
+        main_game.plant_group.remove(plant5)
+        self.assertEqual(len(main_game.plant_group), 5-5)
+
+		
+     def test_place_plant(self):
+		# Test costs for seeds
+        main_game.sun_count = 25
+        self.assertEqual(main_game.sun_count, 25)
+		
+		
+        # Test seeds are planted in 5x9 grid
+        plant1 = Plant(1, 1, [1, 1], 1, 1, 10)   # Lane 1
+        main_game.plant_group.add(plant1)
+        plant2 = Plant(1, 1, [2, 4], 1, 2, 10)   # Lane 2
+        main_game.plant_group.add(plant2)
+        plant3 = Plant(1, 1, [3, 3], 1, 3, 10)   # Lane 3
+        main_game.plant_group.add(plant3)        
+        plant4 = Plant(1, 1, [4, 7], 1, 4, 10)   # Lane 4
+        main_game.plant_group.add(plant4)        
+        plant5 = Plant(1, 1, [20, 20], 1, 5, 10) # Lane 20 | Invalid Position
+        main_game.plant_group.add(plant5)
+		
+        self.assertEqual(len(main_game.plant_group), 5)
+
+        plant_count = 0
+        for i in range(1,5):
+            for j in range(1,9):
+                for plant in main_game.plant_group:
+                    if plant.get_pos()[0] == i and plant.get_pos()[1] == j:
+                        plant_count = plant_count + 1
+        
+        self.assertEqual(len(main_game.plant_group), 4)       
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
