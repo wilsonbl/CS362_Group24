@@ -337,6 +337,7 @@ class Plant:
                 pos[0] += pea_direction[0]
                 pos[1] -= pea_direction[1]
                 pea_group.add(Pea(pos, self.lane))
+                break
                 #pea_shoot()
     
     
