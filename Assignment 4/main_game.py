@@ -1059,6 +1059,7 @@ def score35_handler():
     sun_count = 500
     wave = 2
     score = 35
+    highscore = score
     time = 1000
     time2 = 0
     time3 = 0
@@ -1110,6 +1111,7 @@ def score80_handler():
     sun_count = 700
     wave = 3
     score = 80
+    highscore = score
     time = 1000
     time2 = 0
     time3 = 0
